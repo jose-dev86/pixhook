@@ -1,0 +1,33 @@
+# Render Blueprint (free tier). Postgres comes from Neon (DATABASE_URL), set it in the dashboard.
+services:
+  - type: keyvalue
+    name: pixhook-redis
+    plan: free
+    ipAllowList: []
+
+  - type: web
+    name: pixhook
+    runtime: ruby
+    plan: free
+    # Free instances have no pre-deploy step, so migrations run at the end of the build.
+    buildCommand: bundle install && bin/rails assets:precompile && bin/rails db:prepare db:seed
+    startCommand: bundle exec puma -C config/puma.rb
+    healthCheckPath: /up
+    envVars:
+      - key: SECRET_KEY_BASE
+        generateValue: true
+      - key: DATABASE_URL
+        sync: false
+      - key: APP_URL
+        sync: false
+      - key: DEMO_API_KEY
+        sync: false
+      - key: SIDEKIQ_EMBEDDED
+        value: "true"
+      - key: WEB_CONCURRENCY
+        value: "0"
+      - key: REDIS_URL
+        fromService:
+          type: keyvalue
+          name: pixhook-redis
+          property: connectionString

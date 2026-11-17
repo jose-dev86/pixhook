@@ -1,0 +1,235 @@
+---
+openapi: 3.0.1
+info:
+  title: PixHook API
+  version: v1
+  description: Simulador de gateway Pix com cobranças idempotentes e webhooks assinados.
+paths:
+  "/api/v1/charges":
+    post:
+      summary: Cria uma cobrança Pix (idempotente)
+      tags:
+      - Charges
+      security:
+      - bearer: []
+      parameters:
+      - name: Idempotency-Key
+        in: header
+        required: true
+        schema:
+          type: string
+      responses:
+        '201':
+          description: cobrança criada
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                  txid:
+                    type: string
+                  status:
+                    type: string
+                    enum:
+                    - pending
+                    - paid
+                    - expired
+                    - refunded
+                  amount_cents:
+                    type: integer
+                  description:
+                    type: string
+                    nullable: true
+                  pix_copy_paste:
+                    type: string
+                  expires_at:
+                    type: string
+                    format: date-time
+                  paid_at:
+                    type: string
+                    nullable: true
+                  refunded_at:
+                    type: string
+                    nullable: true
+                  created_at:
+                    type: string
+                    format: date-time
+                required:
+                - id
+                - txid
+                - status
+                - amount_cents
+                - expires_at
+        '200':
+          description: mesma chave e mesmo corpo devolvem a cobrança original
+        '409':
+          description: mesma chave com corpo diferente
+        '400':
+          description: sem Idempotency-Key
+        '422':
+          description: valor inválido
+        '401':
+          description: API key inválida
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                charge:
+                  type: object
+                  properties:
+                    amount_cents:
+                      type: integer
+                    description:
+                      type: string
+                  required:
+                  - amount_cents
+              required:
+              - charge
+    get:
+      summary: Lista as cobranças do lojista
+      tags:
+      - Charges
+      security:
+      - bearer: []
+      parameters:
+      - name: before_id
+        in: query
+        required: false
+        schema:
+          type: integer
+      responses:
+        '200':
+          description: lista paginada por cursor
+  "/api/v1/charges/{txid}":
+    parameters:
+    - name: txid
+      in: path
+      required: true
+      schema:
+        type: string
+    get:
+      summary: Consulta uma cobrança
+      tags:
+      - Charges
+      security:
+      - bearer: []
+      responses:
+        '200':
+          description: encontrada
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                  txid:
+                    type: string
+                  status:
+                    type: string
+                    enum:
+                    - pending
+                    - paid
+                    - expired
+                    - refunded
+                  amount_cents:
+                    type: integer
+                  description:
+                    type: string
+                    nullable: true
+                  pix_copy_paste:
+                    type: string
+                  expires_at:
+                    type: string
+                    format: date-time
+                  paid_at:
+                    type: string
+                    nullable: true
+                  refunded_at:
+                    type: string
+                    nullable: true
+                  created_at:
+                    type: string
+                    format: date-time
+                required:
+                - id
+                - txid
+                - status
+                - amount_cents
+                - expires_at
+        '404':
+          description: de outro lojista
+  "/api/v1/charges/{txid}/pay":
+    parameters:
+    - name: txid
+      in: path
+      required: true
+      schema:
+        type: string
+    post:
+      summary: Simula o pagamento (dispara webhook charge.paid)
+      tags:
+      - Charges
+      security:
+      - bearer: []
+      responses:
+        '200':
+          description: paga
+        '422':
+          description: transição inválida
+  "/api/v1/charges/{txid}/refund":
+    parameters:
+    - name: txid
+      in: path
+      required: true
+      schema:
+        type: string
+    post:
+      summary: Estorna uma cobrança paga
+      tags:
+      - Charges
+      security:
+      - bearer: []
+      responses:
+        '200':
+          description: estornada
+  "/api/v1/webhook_events":
+    get:
+      summary: Lista as entregas de webhook
+      tags:
+      - Webhooks
+      security:
+      - bearer: []
+      responses:
+        '200':
+          description: lista
+  "/api/v1/webhook_events/{id}/redeliver":
+    parameters:
+    - name: id
+      in: path
+      required: true
+      schema:
+        type: integer
+    post:
+      summary: Reenvia um webhook (inclusive da fila de mortos)
+      tags:
+      - Webhooks
+      security:
+      - bearer: []
+      responses:
+        '202':
+          description: reenfileirado
+components:
+  securitySchemes:
+    bearer:
+      type: http
+      scheme: bearer
+servers:
+- url: https://{defaultHost}
+  variables:
+    defaultHost:
+      default: www.example.com

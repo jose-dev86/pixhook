@@ -1,0 +1,27 @@
+<%= turbo_stream_from "charges" %>
+
+<header class="hero">
+  <h1>PixHook</h1>
+  <p>Simulador de gateway Pix: cobranças com idempotência, webhooks assinados (HMAC-SHA256) e entrega com retentativas via Sidekiq.</p>
+  <p><%= link_to "Documentação da API (OpenAPI)", "/api-docs" %></p>
+</header>
+
+<% if notice %><p class="flash notice"><%= notice %></p><% end %>
+<% if alert %><p class="flash alert"><%= alert %></p><% end %>
+
+<% if @merchant %>
+  <p class="muted">Lojista de demonstração: <strong><%= @merchant.name %></strong>. Crie cobranças pela API e acompanhe aqui em tempo real.</p>
+<% else %>
+  <p class="muted">Rode <code>bin/rails db:seed</code> para criar o lojista de demonstração.</p>
+<% end %>
+
+<table class="charges">
+  <thead>
+    <tr><th>txid</th><th>Valor</th><th>Status</th><th>Webhooks</th><th>Criada</th><th></th></tr>
+  </thead>
+  <tbody>
+    <% @charges.each do |charge| %>
+      <%= render "charges/charge", charge: %>
+    <% end %>
+  </tbody>
+</table>
