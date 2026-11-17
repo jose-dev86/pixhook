@@ -17,7 +17,7 @@ gem "stimulus-rails"
 
 # Background jobs, HTTP and observability
 gem "sidekiq", "~> 8.0"
-gem "redis", "~> 5.4"
+gem "redis", "~> 6.0"
 gem "faraday", "~> 2.12"
 gem "lograge"
 gem "rails-i18n", "~> 8.0"
