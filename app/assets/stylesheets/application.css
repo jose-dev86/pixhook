@@ -23,8 +23,9 @@
   --mono: ui-monospace, "SFMono-Regular", "JetBrains Mono", Menlo, monospace;
 }
 
+/* Dark theme: follows the OS unless the user picked a theme with the toggle (data-theme on <html>). */
 @media (prefers-color-scheme: dark) {
-  :root {
+  :root:not([data-theme="light"]) {
     --bg: #0b1120;
     --surface: #111827;
     --surface-2: #1f2937;
@@ -45,6 +46,31 @@
     --shadow: none;
   }
 }
+
+:root[data-theme="dark"] {
+  --bg: #0b1120;
+  --surface: #111827;
+  --surface-2: #1f2937;
+  --border: #273244;
+  --text: #e5e7eb;
+  --muted: #94a3b8;
+  --primary: #2dd4bf;
+  --primary-strong: #5eead4;
+  --primary-soft: #134e4a;
+  --success: #86efac;
+  --success-soft: #14532d;
+  --warning: #fcd34d;
+  --warning-soft: #422006;
+  --danger: #fca5a5;
+  --danger-soft: #450a0a;
+  --info: #a5b4fc;
+  --info-soft: #1e1b4b;
+  --shadow: none;
+}
+
+:root { color-scheme: light; }
+:root[data-theme="dark"] { color-scheme: dark; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { color-scheme: dark; } }
 
 * { box-sizing: border-box; }
 html { -webkit-text-size-adjust: 100%; }
@@ -116,6 +142,15 @@ code, .mono { font-family: var(--mono); font-size: 0.92em; }
 .btn--primary:hover { background: var(--primary-strong); }
 .btn--ghost { border-color: transparent; background: transparent; }
 .btn--small { padding: 4px 10px; font-size: 12px; }
+.btn--icon { width: 36px; height: 36px; padding: 0; }
+.topbar__actions { display: flex; align-items: center; gap: 8px; }
+.theme-icon--light { display: none; }
+:root[data-theme="dark"] .theme-icon--light { display: block; }
+:root[data-theme="dark"] .theme-icon--dark { display: none; }
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .theme-icon--light { display: block; }
+  :root:not([data-theme="light"]) .theme-icon--dark { display: none; }
+}
 .btn:focus-visible, .input:focus-visible, .nav__link:focus-visible, .tab:focus-visible { outline: 2px solid var(--primary); outline-offset: 2px; }
 form.button_to { display: inline; }
 

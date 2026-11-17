@@ -5,6 +5,9 @@
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <meta name="description" content="Simulador de gateway Pix em Rails 8: cobranças idempotentes e webhooks assinados.">
     <meta name="color-scheme" content="light dark">
+    <script>
+      try { const theme = localStorage.getItem("theme"); if (theme) document.documentElement.dataset.theme = theme } catch {}
+    </script>
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
     <%= yield :head %>
@@ -44,9 +47,18 @@
             <h1 class="topbar__title"><%= content_for(:title) %></h1>
             <% if content_for?(:subtitle) %><p class="topbar__subtitle"><%= yield :subtitle %></p><% end %>
           </div>
-          <% if demo_merchant %>
-            <%= link_to t("layouts.new_charge"), new_charge_path, class: "btn btn--primary" %>
-          <% end %>
+          <div class="topbar__actions">
+            <button type="button" class="btn btn--icon" data-controller="theme" data-action="theme#toggle"
+                    data-theme-light-label-value="<%= t('layouts.theme.light') %>"
+                    data-theme-dark-label-value="<%= t('layouts.theme.dark') %>"
+                    aria-label="<%= t('layouts.theme.toggle') %>">
+              <%= icon_svg(:moon, class_name: "icon theme-icon--dark") %>
+              <%= icon_svg(:sun, class_name: "icon theme-icon--light") %>
+            </button>
+            <% if demo_merchant %>
+              <%= link_to t("layouts.new_charge"), new_charge_path, class: "btn btn--primary" %>
+            <% end %>
+          </div>
         </header>
 
         <div id="flash" class="flash-area" aria-live="polite">

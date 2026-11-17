@@ -15,7 +15,7 @@ Simulador de gateway Pix em **Ruby on Rails 8**. Cria cobranças com **idempotê
 
 ## Painel
 
-Inspirado em painéis de pagamento como Stripe e Asaas, em pt-BR e com tema claro/escuro automático:
+Inspirado em painéis de pagamento como Stripe e Asaas, em pt-BR, com **modo claro e escuro** (segue o sistema e tem botão para alternar; a escolha fica salva no navegador):
 
 - **Visão geral** com indicadores (recebido, a receber, taxa de entrega de webhooks, falhas) e uma fila "Precisa de atenção" com os webhooks que falharam e o botão de reenviar.
 - **Cobranças** com filtro por status, valores alinhados à direita e atualização ao vivo (Turbo Streams).
@@ -97,7 +97,7 @@ curl localhost:3000/api/v1/webhook_events -H "Authorization: Bearer $KEY"
 ## Testes e qualidade
 
 ```bash
-bundle exec rspec          # 90 exemplos, cobertura de linha ~98% (SimpleCov, mínimo 90%)
+bundle exec rspec          # 91 exemplos, cobertura de linha ~98% (SimpleCov, mínimo 90%)
 bundle exec rspec spec/system            # só os testes de ponta a ponta (Playwright)
 HEADLESS=false bundle exec rspec spec/system   # mesmo teste com o navegador visível
 bin/rubocop                # rubocop-rails-omakase

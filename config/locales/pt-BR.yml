@@ -47,6 +47,10 @@ pt-BR:
       api_docs: Documentação da API
       repository: Código no GitHub
     demo_badge: Ambiente de demonstração
+    theme:
+      toggle: Alternar tema
+      light: Usar modo claro
+      dark: Usar modo escuro
     new_charge: Criar cobrança
 
   dashboard:
