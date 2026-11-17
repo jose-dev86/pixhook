@@ -54,9 +54,15 @@ pt-BR:
       title: Visão geral
       subtitle: Acompanhe cobranças e entregas de webhook em tempo real.
       received: Recebido
-      received_hint: "%{count} cobranças pagas"
+      received_hint:
+        zero: Nenhuma cobrança paga
+        one: 1 cobrança paga
+        other: "%{count} cobranças pagas"
       pending: A receber
-      pending_hint: "%{count} cobranças pendentes"
+      pending_hint:
+        zero: Nenhuma cobrança pendente
+        one: 1 cobrança pendente
+        other: "%{count} cobranças pendentes"
       delivery_rate: Entrega de webhooks
       delivery_rate_hint: "%{delivered} de %{total} entregues"
       failed: Webhooks com falha

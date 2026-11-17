@@ -97,16 +97,20 @@ curl localhost:3000/api/v1/webhook_events -H "Authorization: Bearer $KEY"
 ## Testes e qualidade
 
 ```bash
-bundle exec rspec          # 80+ exemplos, cobertura de linha ~98% (SimpleCov, mínimo 90%)
+bundle exec rspec          # 90 exemplos, cobertura de linha ~98% (SimpleCov, mínimo 90%)
+bundle exec rspec spec/system            # só os testes de ponta a ponta (Playwright)
+HEADLESS=false bundle exec rspec spec/system   # mesmo teste com o navegador visível
 bin/rubocop                # rubocop-rails-omakase
 bin/brakeman               # análise estática de segurança
 bin/bundler-audit          # gems vulneráveis
 RAILS_ENV=test COVERAGE=false bundle exec rake rswag:specs:swaggerize   # regenera o OpenAPI
 ```
 
+**Testes de ponta a ponta com Playwright** (Capybara + `capybara-playwright-driver`, Chromium headless) sobem o app num Puma real e cobrem: criar cobrança pelo formulário, simular pagamento com o webhook entregue por HTTP de verdade ao receptor assinado, a tela atualizando **em tempo real** quando a cobrança é paga pela API (Turbo Streams via Action Cable), copiar o Pix para a área de transferência, estorno, filtro por status, reenvio da fila de mortos e o layout no celular. Para rodar localmente: `npm ci && npx playwright install chromium`.
+
 Os request specs são a própria documentação: o `swagger/v1/swagger.yaml` é gerado a partir deles (rswag). Os jobs são testados com WebMock (sucesso, 5xx, timeout, fila de mortos) e a assinatura com casos de corpo adulterado, segredo errado e replay.
 
-O CI (GitHub Actions) roda RSpec com PostgreSQL e Redis, RuboCop, Brakeman, bundler-audit e auditoria do importmap.
+O CI (GitHub Actions) roda RSpec (incluindo os testes Playwright) com PostgreSQL e Redis, RuboCop, Brakeman, bundler-audit e auditoria do importmap.
 
 ## Deploy (custo zero)
 

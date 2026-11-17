@@ -1,0 +1,7 @@
+{
+  "name": "pixhook",
+  "private": true,
+  "devDependencies": {
+    "playwright": "1.65.0"
+  }
+}

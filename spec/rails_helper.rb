@@ -15,6 +15,8 @@ require "rspec/rails"
 require "webmock/rspec"
 require "sidekiq/testing"
 
+Rails.root.glob("spec/support/**/*.rb").sort.each { |file| require file }
+
 Sidekiq::Testing.fake!
 WebMock.disable_net_connect!(allow_localhost: false)
 

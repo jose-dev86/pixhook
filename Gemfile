@@ -55,6 +55,8 @@ group :development, :test do
 end
 
 group :test do
+  gem "capybara"
+  gem "capybara-playwright-driver", "~> 0.5.14"
   gem "webmock"
   gem "simplecov", require: false
   gem "shoulda-matchers"
