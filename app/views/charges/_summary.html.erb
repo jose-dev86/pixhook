@@ -1,0 +1,23 @@
+<section class="card" id="charge_summary">
+  <header class="card__header">
+    <div>
+      <p class="kpi__label"><%= Charge.human_attribute_name(:amount_cents) %></p>
+      <p class="amount"><%= money(charge.amount_cents) %> <%= status_badge(charge) %></p>
+    </div>
+    <div class="actions">
+      <% if charge.pending? %>
+        <%= button_to t("charges.actions.pay"), pay_charge_path(charge), class: "btn btn--primary" %>
+      <% elsif charge.paid? %>
+        <%= button_to t("charges.actions.refund"), refund_charge_path(charge), class: "btn" %>
+      <% end %>
+    </div>
+  </header>
+
+  <dl class="details">
+    <dt><%= Charge.human_attribute_name(:txid) %></dt><dd class="mono"><%= charge.txid %></dd>
+    <dt><%= Charge.human_attribute_name(:created_at) %></dt><dd><%= panel_time(charge.created_at) %></dd>
+    <dt><%= Charge.human_attribute_name(:expires_at) %></dt><dd><%= panel_time(charge.expires_at) %></dd>
+    <% if charge.paid_at %><dt><%= Charge.human_attribute_name(:paid_at) %></dt><dd><%= panel_time(charge.paid_at) %></dd><% end %>
+    <% if charge.refunded_at %><dt><%= Charge.human_attribute_name(:refunded_at) %></dt><dd><%= panel_time(charge.refunded_at) %></dd><% end %>
+  </dl>
+</section>

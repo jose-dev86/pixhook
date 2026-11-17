@@ -1,0 +1,27 @@
+<% content_for :title, t(".title") %>
+<% content_for :subtitle, t(".subtitle") %>
+<%= turbo_stream_from "webhook_events" %>
+
+<section class="card card--flush">
+  <div class="table-wrap">
+    <table class="table">
+      <thead>
+        <tr>
+          <th scope="col"><%= t("webhook_events.table.event") %></th>
+          <th scope="col" class="num"><%= t("webhook_events.table.charge") %></th>
+          <th scope="col"><%= t("webhook_events.table.status") %></th>
+          <th scope="col" class="num hide-sm"><%= t("webhook_events.table.attempts") %></th>
+          <th scope="col" class="hide-sm"><%= t("webhook_events.table.response") %></th>
+          <th scope="col" class="hide-sm"><%= t("webhook_events.table.created_at") %></th>
+          <th scope="col"></th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @events.each do |event| %>
+          <%= render "webhook_events/row", event: %>
+        <% end %>
+      </tbody>
+    </table>
+    <% if @events.empty? %><p class="empty"><%= t(".empty") %></p><% end %>
+  </div>
+</section>

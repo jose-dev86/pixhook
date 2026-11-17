@@ -1,0 +1,29 @@
+<% content_for :title, t(".title") %>
+<% content_for :subtitle, t(".subtitle") %>
+
+<section class="card card--narrow">
+  <% if @errors.present? %>
+    <div class="flash flash--alert" role="alert">
+      <ul><% @errors.each do |message| %><li><%= message %></li><% end %></ul>
+    </div>
+  <% end %>
+
+  <%= form_with url: charges_path, class: "form" do |f| %>
+    <%= hidden_field_tag :idempotency_key, @idempotency_key %>
+
+    <div class="field">
+      <%= label_tag "charge_amount", t(".amount_label"), class: "label" %>
+      <%= text_field_tag "charge[amount]", params.dig(:charge, :amount), id: "charge_amount", class: "input", inputmode: "decimal", placeholder: "49,90", required: true, autofocus: true %>
+    </div>
+
+    <div class="field">
+      <%= label_tag "charge_description", t(".description_label"), class: "label" %>
+      <%= text_field_tag "charge[description]", params.dig(:charge, :description), id: "charge_description", class: "input", maxlength: 140, placeholder: t(".description_placeholder") %>
+    </div>
+
+    <div class="actions">
+      <%= f.submit t(".submit"), class: "btn btn--primary", data: { turbo_submits_with: "…" } %>
+      <%= link_to t(".cancel"), charges_path, class: "btn btn--ghost" %>
+    </div>
+  <% end %>
+</section>

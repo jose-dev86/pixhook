@@ -17,6 +17,7 @@ class Charge < ApplicationRecord
   after_commit :broadcast_to_panel
 
   scope :recent_first, -> { order(created_at: :desc, id: :desc) }
+  scope :with_status, ->(status) { status.present? && statuses.key?(status) ? where(status:) : all }
 
   class InvalidTransition < StandardError; end
 
@@ -37,7 +38,11 @@ class Charge < ApplicationRecord
   end
 
   def pix_copy_paste
-    "00020126580014BR.GOV.BCB.PIX0136#{txid}5204000053039865406#{format('%.2f', amount_cents / 100.0)}5802BR6304PIXH"
+    PixBrCode.call(amount_cents:, txid:)
+  end
+
+  def amount
+    amount_cents / 100.0
   end
 
   def as_api_json
@@ -80,6 +85,7 @@ class Charge < ApplicationRecord
   end
 
   def broadcast_to_panel
-    broadcast_replace_later_to "charges", target: self, partial: "charges/charge", locals: { charge: self }
+    broadcast_replace_later_to "charges", target: self, partial: "charges/row", locals: { charge: self }
+    broadcast_replace_later_to self, target: "charge_summary", partial: "charges/summary", locals: { charge: self }
   end
 end

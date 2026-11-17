@@ -1,0 +1,19 @@
+<div class="table-wrap">
+  <table class="table">
+    <thead>
+      <tr>
+        <th scope="col"><%= t("charges.table.charge") %></th>
+        <th scope="col" class="num"><%= t("charges.table.amount") %></th>
+        <th scope="col"><%= t("charges.table.status") %></th>
+        <th scope="col" class="hide-sm"><%= t("charges.table.webhooks") %></th>
+        <th scope="col" class="hide-sm"><%= t("charges.table.created_at") %></th>
+      </tr>
+    </thead>
+    <tbody>
+      <% charges.each do |charge| %>
+        <%= render "charges/row", charge: %>
+      <% end %>
+    </tbody>
+  </table>
+  <% if charges.empty? %><p class="empty"><%= t("charges.index.empty") %></p><% end %>
+</div>

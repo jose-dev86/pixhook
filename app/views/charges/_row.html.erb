@@ -1,0 +1,16 @@
+<tr id="<%= dom_id(charge) %>">
+  <td>
+    <%= link_to charge_path(charge), class: "row-link" do %>
+      <strong><%= charge.description.presence || "Cobrança ##{charge.id}" %></strong>
+      <span class="mono muted"><%= charge.txid.first(12) %>…</span>
+    <% end %>
+  </td>
+  <td class="num"><%= money(charge.amount_cents) %></td>
+  <td><%= status_badge(charge) %></td>
+  <td class="hide-sm">
+    <% charge.webhook_events.each do |event| %>
+      <span class="dot dot--<%= event.status %>" title="<%= event_label(event.event_type) %>: <%= event.class.human_attribute_name("statuses.#{event.status}") %>"></span>
+    <% end %>
+  </td>
+  <td class="hide-sm muted"><%= panel_time(charge.created_at, format: :panel_short) %></td>
+</tr>

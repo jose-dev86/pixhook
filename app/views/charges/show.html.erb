@@ -1,0 +1,22 @@
+<% content_for :title, @charge.description.presence || "Cobrança ##{@charge.id}" %>
+<%= turbo_stream_from @charge %>
+
+<p><%= link_to "← #{t('.back')}", charges_path, class: "link" %></p>
+
+<div class="grid-2">
+  <div class="stack">
+    <%= render "charges/summary", charge: @charge %>
+    <%= render "charges/deliveries", charge: @charge %>
+  </div>
+
+  <section class="card pix" data-controller="clipboard" data-clipboard-copied-value="<%= t('.copied') %>">
+    <header class="card__header"><h2><%= t(".pix") %></h2></header>
+    <div class="pix__qr"><%= qr_code_svg(@charge.pix_copy_paste) %></div>
+    <p class="muted small"><%= t(".pix_hint") %></p>
+    <label class="label" for="pix-code"><%= t(".copy_paste") %></label>
+    <div class="copy">
+      <input id="pix-code" class="input mono" readonly value="<%= @charge.pix_copy_paste %>" data-clipboard-target="source">
+      <button type="button" class="btn" data-action="clipboard#copy" data-clipboard-target="button"><%= t(".copy") %></button>
+    </div>
+  </section>
+</div>

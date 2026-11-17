@@ -1,0 +1,9 @@
+<tr id="<%= dom_id(event) %>">
+  <td><strong><%= event_label(event.event_type) %></strong></td>
+  <td class="num"><%= link_to money(event.charge.amount_cents), charge_path(event.charge), class: "link" %></td>
+  <td><%= status_badge(event) %></td>
+  <td class="num hide-sm"><%= event.attempts %></td>
+  <td class="hide-sm muted"><%= event.last_response_code ? "HTTP #{event.last_response_code}" : event.last_error.presence || t("webhook_events.table.never") %></td>
+  <td class="hide-sm muted"><%= panel_time(event.created_at, format: :panel_short) %></td>
+  <td><% unless event.delivered? %><%= button_to t("charges.actions.redeliver"), redeliver_webhook_event_path(event), class: "btn btn--small" %><% end %></td>
+</tr>

@@ -9,6 +9,20 @@ Simulador de gateway Pix em **Ruby on Rails 8**. Cria cobranças com **idempotê
 - **Demo:** _link do Render após o deploy_ (plano gratuito: a primeira requisição pode levar ~1 min para acordar o servidor)
 - **API (OpenAPI/Swagger):** `/api-docs`
 
+| Visão geral | Detalhe da cobrança |
+|---|---|
+| ![Painel com indicadores e cobranças recentes](docs/dashboard.jpg) | ![Cobrança com QR code Pix e linha do tempo do webhook](docs/cobranca.jpg) |
+
+## Painel
+
+Inspirado em painéis de pagamento como Stripe e Asaas, em pt-BR e com tema claro/escuro automático:
+
+- **Visão geral** com indicadores (recebido, a receber, taxa de entrega de webhooks, falhas) e uma fila "Precisa de atenção" com os webhooks que falharam e o botão de reenviar.
+- **Cobranças** com filtro por status, valores alinhados à direita e atualização ao vivo (Turbo Streams).
+- **Detalhe da cobrança** com **QR code Pix no padrão BR Code do Banco Central** (EMV com CRC16, legível por apps de banco; a chave é de demonstração), "copia e cola" com botão de copiar (Stimulus) e **linha do tempo das entregas** com tentativas, código HTTP, payload e reenvio.
+- **Criar cobrança** pelo próprio painel: o formulário carrega uma chave de idempotência, então um clique duplo não duplica a cobrança.
+- **Webhooks**: todas as entregas, com status traduzidos e reenvio manual.
+
 ## O que dá para ver aqui
 
 | Problema | Solução no código |
@@ -83,7 +97,7 @@ curl localhost:3000/api/v1/webhook_events -H "Authorization: Bearer $KEY"
 ## Testes e qualidade
 
 ```bash
-bundle exec rspec          # 60+ exemplos, cobertura de linha ~98% (SimpleCov, mínimo 90%)
+bundle exec rspec          # 80+ exemplos, cobertura de linha ~98% (SimpleCov, mínimo 90%)
 bin/rubocop                # rubocop-rails-omakase
 bin/brakeman               # análise estática de segurança
 bin/bundler-audit          # gems vulneráveis

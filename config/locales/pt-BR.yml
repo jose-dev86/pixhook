@@ -1,0 +1,137 @@
+pt-BR:
+  activerecord:
+    models:
+      charge:
+        one: Cobrança
+        other: Cobranças
+      merchant:
+        one: Lojista
+        other: Lojistas
+      webhook_event:
+        one: Evento de webhook
+        other: Eventos de webhook
+    attributes:
+      charge:
+        amount_cents: Valor
+        description: Descrição
+        status: Status
+        txid: Identificador (txid)
+        expires_at: Expira em
+        paid_at: Pago em
+        refunded_at: Estornado em
+        created_at: Criada em
+      charge/statuses:
+        pending: Pendente
+        paid: Paga
+        expired: Expirada
+        refunded: Estornada
+      merchant:
+        name: Nome
+        webhook_url: URL do webhook
+      webhook_event:
+        event_type: Evento
+        attempts: Tentativas
+        last_response_code: Último código HTTP
+        last_error: Último erro
+        delivered_at: Entregue em
+      webhook_event/statuses:
+        pending: Pendente
+        delivered: Entregue
+        dead: Falhou
+
+  layouts:
+    nav:
+      overview: Visão geral
+      charges: Cobranças
+      webhooks: Webhooks
+      api_docs: Documentação da API
+      repository: Código no GitHub
+    demo_badge: Ambiente de demonstração
+    new_charge: Criar cobrança
+
+  dashboard:
+    show:
+      title: Visão geral
+      subtitle: Acompanhe cobranças e entregas de webhook em tempo real.
+      received: Recebido
+      received_hint: "%{count} cobranças pagas"
+      pending: A receber
+      pending_hint: "%{count} cobranças pendentes"
+      delivery_rate: Entrega de webhooks
+      delivery_rate_hint: "%{delivered} de %{total} entregues"
+      failed: Webhooks com falha
+      failed_hint: Na fila de mortos, prontos para reenvio
+      attention: Precisa de atenção
+      attention_empty: Nada pendente. Todas as entregas estão em dia.
+      recent: Cobranças recentes
+      see_all: Ver todas
+      no_merchant: Rode %{command} para criar o lojista de demonstração.
+
+  charges:
+    index:
+      title: Cobranças
+      subtitle: Cobranças Pix do lojista de demonstração.
+      all: Todas
+      empty: Nenhuma cobrança por aqui ainda.
+    table:
+      charge: Cobrança
+      amount: Valor
+      status: Status
+      webhooks: Webhooks
+      created_at: Criada em
+    show:
+      back: Voltar para cobranças
+      pix: Pague com Pix
+      pix_hint: QR code no padrão BR Code do Banco Central (chave de demonstração).
+      copy_paste: Pix copia e cola
+      copy: Copiar
+      copied: Copiado!
+      details: Detalhes
+      timeline: Linha do tempo
+      created: Cobrança criada
+      deliveries: Entregas de webhook
+      no_deliveries: Nenhum evento gerado ainda. Simule o pagamento para disparar o webhook.
+      payload: Ver payload
+    new:
+      title: Criar cobrança
+      subtitle: O formulário envia uma chave de idempotência; um clique duplo não gera cobrança repetida.
+      amount_label: Valor (R$)
+      description_label: Descrição
+      description_placeholder: "Ex.: Pedido 1234"
+      submit: Criar cobrança
+      cancel: Cancelar
+    actions:
+      pay: Simular pagamento
+      refund: Estornar
+      redeliver: Reenviar
+    flash:
+      created: Cobrança criada.
+      replayed: Essa cobrança já tinha sido criada; nada foi duplicado.
+      paid: Pagamento simulado. O webhook foi enfileirado.
+      refunded: Cobrança estornada. O webhook foi enfileirado.
+      invalid_transition: Não é possível fazer isso com uma cobrança %{status}.
+      invalid: Não foi possível criar a cobrança.
+      redelivered: Webhook enfileirado para reenvio.
+
+  webhook_events:
+    types:
+      charge_paid: Cobrança paga
+      charge_refunded: Cobrança estornada
+      charge_expired: Cobrança expirada
+    index:
+      title: Webhooks
+      subtitle: Cada mudança de status gera um evento assinado (HMAC-SHA256) entregue com retentativas.
+      empty: Nenhum evento ainda.
+    table:
+      event: Evento
+      charge: Cobrança
+      status: Status
+      attempts: Tentativas
+      response: Resposta
+      created_at: Criado em
+      never: "—"
+
+  time:
+    formats:
+      panel: "%d/%m/%Y %H:%M"
+      panel_short: "%d/%m %H:%M"

@@ -1,27 +1,18 @@
+<% content_for :title, t(".title") %>
+<% content_for :subtitle, t(".subtitle") %>
 <%= turbo_stream_from "charges" %>
 
-<header class="hero">
-  <h1>PixHook</h1>
-  <p>Simulador de gateway Pix: cobranças com idempotência, webhooks assinados (HMAC-SHA256) e entrega com retentativas via Sidekiq.</p>
-  <p><%= link_to "Documentação da API (OpenAPI)", "/api-docs" %></p>
-</header>
-
-<% if notice %><p class="flash notice"><%= notice %></p><% end %>
-<% if alert %><p class="flash alert"><%= alert %></p><% end %>
-
-<% if @merchant %>
-  <p class="muted">Lojista de demonstração: <strong><%= @merchant.name %></strong>. Crie cobranças pela API e acompanhe aqui em tempo real.</p>
-<% else %>
-  <p class="muted">Rode <code>bin/rails db:seed</code> para criar o lojista de demonstração.</p>
-<% end %>
-
-<table class="charges">
-  <thead>
-    <tr><th>txid</th><th>Valor</th><th>Status</th><th>Webhooks</th><th>Criada</th><th></th></tr>
-  </thead>
-  <tbody>
-    <% @charges.each do |charge| %>
-      <%= render "charges/charge", charge: %>
+<nav class="tabs" aria-label="Filtrar por status">
+  <%= link_to charges_path, class: [ "tab", { "tab--active" => @status.nil? } ] do %>
+    <%= t(".all") %> <span class="tab__count"><%= @counts.values.sum %></span>
+  <% end %>
+  <% Charge.statuses.each_key do |status| %>
+    <%= link_to charges_path(status:), class: [ "tab", { "tab--active" => @status == status } ] do %>
+      <%= Charge.human_attribute_name("statuses.#{status}") %> <span class="tab__count"><%= @counts.fetch(status, 0) %></span>
     <% end %>
-  </tbody>
-</table>
+  <% end %>
+</nav>
+
+<section class="card card--flush">
+  <%= render "charges/table", charges: @charges %>
+</section>

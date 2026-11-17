@@ -1,0 +1,38 @@
+<section class="card" id="charge_deliveries">
+  <header class="card__header"><h2><%= t("charges.show.timeline") %></h2></header>
+
+  <ol class="timeline">
+    <li class="timeline__item">
+      <span class="dot dot--delivered"></span>
+      <div>
+        <strong><%= t("charges.show.created") %></strong>
+        <p class="muted small"><%= panel_time(charge.created_at) %></p>
+      </div>
+    </li>
+    <% charge.webhook_events.order(:id).each do |event| %>
+      <li class="timeline__item">
+        <span class="dot dot--<%= event.status %>"></span>
+        <div class="timeline__body">
+          <div class="timeline__head">
+            <strong><%= event_label(event.event_type) %></strong>
+            <%= status_badge(event) %>
+          </div>
+          <p class="muted small">
+            <%= panel_time(event.created_at) %> ·
+            <%= WebhookEvent.human_attribute_name(:attempts) %>: <%= event.attempts %>
+            <% if event.last_response_code %> · HTTP <%= event.last_response_code %><% end %>
+            <% if event.last_error.present? %> · <%= event.last_error %><% end %>
+          </p>
+          <details class="payload">
+            <summary><%= t("charges.show.payload") %></summary>
+            <pre class="mono"><%= JSON.pretty_generate(event.payload) %></pre>
+          </details>
+          <% unless event.delivered? %>
+            <%= button_to t("charges.actions.redeliver"), redeliver_webhook_event_path(event), class: "btn btn--small" %>
+          <% end %>
+        </div>
+      </li>
+    <% end %>
+  </ol>
+  <% if charge.webhook_events.none? %><p class="empty"><%= t("charges.show.no_deliveries") %></p><% end %>
+</section>

@@ -1,29 +1,63 @@
 <!DOCTYPE html>
-<html>
+<html lang="pt-BR">
   <head>
-    <title><%= content_for(:title) || "Pixhook" %></title>
+    <title><%= [ content_for(:title), "PixHook" ].compact.join(" · ") %></title>
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="application-name" content="Pixhook">
-    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="description" content="Simulador de gateway Pix em Rails 8: cobranças idempotentes e webhooks assinados.">
+    <meta name="color-scheme" content="light dark">
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
-
     <%= yield :head %>
-
-    <%# Enable PWA manifest for installable apps (make sure to enable in config/routes.rb too!) %>
-    <%#= tag.link rel: "manifest", href: pwa_manifest_path(format: :json) %>
-
-    <link rel="icon" href="/icon.png" type="image/png">
     <link rel="icon" href="/icon.svg" type="image/svg+xml">
-    <link rel="apple-touch-icon" href="/icon.png">
-
-    <%# Includes all stylesheet files in app/assets/stylesheets %>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <%= stylesheet_link_tag :app, "data-turbo-track": "reload" %>
     <%= javascript_importmap_tags %>
   </head>
 
   <body>
-    <%= yield %>
+    <div class="shell">
+      <aside class="sidebar">
+        <%= link_to root_path, class: "brand" do %>
+          <span class="brand__mark">P</span>
+          <span class="brand__name">PixHook</span>
+        <% end %>
+
+        <nav class="nav" aria-label="Principal">
+          <%= nav_link t("layouts.nav.overview"), root_path, icon: :home %>
+          <%= nav_link t("layouts.nav.charges"), charges_path, icon: :list %>
+          <%= nav_link t("layouts.nav.webhooks"), webhook_events_path, icon: :bolt %>
+        </nav>
+
+        <nav class="nav nav--secondary" aria-label="Recursos">
+          <%= link_to "/api-docs", class: "nav__link" do %><%= icon_svg(:book) %><span><%= t("layouts.nav.api_docs") %></span><% end %>
+          <%= link_to "https://github.com/jose-dev86/pixhook", class: "nav__link", target: "_blank", rel: "noopener" do %><%= icon_svg(:code) %><span><%= t("layouts.nav.repository") %></span><% end %>
+        </nav>
+
+        <p class="sidebar__badge"><%= t("layouts.demo_badge") %></p>
+      </aside>
+
+      <div class="main">
+        <header class="topbar">
+          <div>
+            <h1 class="topbar__title"><%= content_for(:title) %></h1>
+            <% if content_for?(:subtitle) %><p class="topbar__subtitle"><%= yield :subtitle %></p><% end %>
+          </div>
+          <% if demo_merchant %>
+            <%= link_to t("layouts.new_charge"), new_charge_path, class: "btn btn--primary" %>
+          <% end %>
+        </header>
+
+        <div id="flash" class="flash-area" aria-live="polite">
+          <% if notice %><p class="flash flash--notice"><%= notice %></p><% end %>
+          <% if alert %><p class="flash flash--alert"><%= alert %></p><% end %>
+        </div>
+
+        <main class="content">
+          <%= yield %>
+        </main>
+      </div>
+    </div>
   </body>
 </html>

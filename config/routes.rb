@@ -20,10 +20,16 @@ Rails.application.routes.draw do
     post "webhooks/:merchant_id", to: "webhook_receiver#create", as: :webhook_receiver
   end
 
-  resources :charges, only: :index do
-    post :pay, on: :member
+  resources :charges, only: %i[index show new create] do
+    member do
+      post :pay
+      post :refund
+    end
+  end
+  resources :webhook_events, only: :index do
+    post :redeliver, on: :member
   end
 
   get "up" => "rails/health#show", as: :rails_health_check
-  root "charges#index"
+  root "dashboard#show"
 end

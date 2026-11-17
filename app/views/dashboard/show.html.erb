@@ -1,0 +1,58 @@
+<% content_for :title, t(".title") %>
+<% content_for :subtitle, t(".subtitle") %>
+
+<% if demo_merchant %>
+  <%= turbo_stream_from "charges" %>
+
+  <section class="kpis">
+    <article class="kpi">
+      <p class="kpi__label"><%= t(".received") %></p>
+      <p class="kpi__value"><%= money(@received_cents) %></p>
+      <p class="kpi__hint"><%= t(".received_hint", count: @paid_count) %></p>
+    </article>
+    <article class="kpi">
+      <p class="kpi__label"><%= t(".pending") %></p>
+      <p class="kpi__value"><%= money(@pending_cents) %></p>
+      <p class="kpi__hint"><%= t(".pending_hint", count: @pending_count) %></p>
+    </article>
+    <article class="kpi">
+      <p class="kpi__label"><%= t(".delivery_rate") %></p>
+      <p class="kpi__value"><%= @events_total.zero? ? "—" : number_to_percentage(@events_delivered * 100.0 / @events_total, precision: 0) %></p>
+      <p class="kpi__hint"><%= t(".delivery_rate_hint", delivered: @events_delivered, total: @events_total) %></p>
+    </article>
+    <article class="kpi <%= 'kpi--alert' if @dead_count.positive? %>">
+      <p class="kpi__label"><%= t(".failed") %></p>
+      <p class="kpi__value"><%= @dead_count %></p>
+      <p class="kpi__hint"><%= t(".failed_hint") %></p>
+    </article>
+  </section>
+
+  <section class="card">
+    <header class="card__header"><h2><%= t(".attention") %></h2></header>
+    <% if @dead_events.any? %>
+      <ul class="list">
+        <% @dead_events.each do |event| %>
+          <li class="list__item">
+            <div>
+              <strong><%= event_label(event.event_type) %></strong>
+              <span class="muted">· <%= link_to money(event.charge.amount_cents), charge_path(event.charge) %> · <%= event.last_error %></span>
+            </div>
+            <%= button_to t("charges.actions.redeliver"), redeliver_webhook_event_path(event), class: "btn btn--small" %>
+          </li>
+        <% end %>
+      </ul>
+    <% else %>
+      <p class="empty"><%= t(".attention_empty") %></p>
+    <% end %>
+  </section>
+
+  <section class="card">
+    <header class="card__header">
+      <h2><%= t(".recent") %></h2>
+      <%= link_to t(".see_all"), charges_path, class: "link" %>
+    </header>
+    <%= render "charges/table", charges: @recent_charges %>
+  </section>
+<% else %>
+  <section class="card"><p class="empty"><%= t(".no_merchant", command: tag.code("bin/rails db:seed")).html_safe %></p></section>
+<% end %>
