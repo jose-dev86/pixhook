@@ -6,8 +6,16 @@ Simulador de gateway Pix em **Ruby on Rails 8**. Cria cobranças com **idempotê
 
 É um projeto de portfólio: os problemas são os mesmos de uma integração de pagamentos real (requisições duplicadas, rede instável, lojista fora do ar, ataques de replay), em escala pequena.
 
-- **Demo:** _link do Render após o deploy_ (plano gratuito: a primeira requisição pode levar ~1 min para acordar o servidor)
-- **API (OpenAPI/Swagger):** `/api-docs`
+- **Demo:** https://pixhook-tvzf.onrender.com (plano gratuito: a primeira requisição pode levar ~1 min para acordar o servidor)
+- **API (OpenAPI/Swagger):** https://pixhook-tvzf.onrender.com/api-docs
+- **API key pública da demo:** `pk_demo_f30226597b38b3a7d19b0187` (só serve para o lojista de demonstração)
+
+```bash
+KEY=pk_demo_f30226597b38b3a7d19b0187
+curl -X POST https://pixhook-tvzf.onrender.com/api/v1/charges \
+  -H "Authorization: Bearer $KEY" -H "Content-Type: application/json" \
+  -H "Idempotency-Key: $(uuidgen)" -d '{"charge":{"amount_cents":1990,"description":"Pedido demo"}}'
+```
 
 | Visão geral | Detalhe da cobrança |
 |---|---|
