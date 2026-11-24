@@ -3,12 +3,14 @@ services:
   - type: keyvalue
     name: pixhook-redis
     plan: free
+    region: ohio
     ipAllowList: []
 
   - type: web
     name: pixhook
     runtime: ruby
     plan: free
+    region: ohio
     # Free instances have no pre-deploy step, so migrations run at the end of the build.
     buildCommand: bundle install && bin/rails assets:precompile && bin/rails db:prepare db:seed
     startCommand: bundle exec puma -C config/puma.rb

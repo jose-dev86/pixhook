@@ -6,7 +6,10 @@ if Merchant.none?
   options = { name: "Loja Demo" }
   options[:api_key] = ENV["DEMO_API_KEY"] if ENV["DEMO_API_KEY"].present?
   merchant, api_key = Merchant.create_with_api_key!(**options)
-  merchant.update!(webhook_url: "#{base_url}/demo/webhooks/#{merchant.id}")
   puts "Lojista: #{merchant.name}"
   puts "API key: #{api_key}" if ENV["DEMO_API_KEY"].blank?
 end
+
+# Runs on every deploy so a changed APP_URL re-points the demo webhook.
+demo = Merchant.find_by!(name: "Loja Demo")
+demo.update!(webhook_url: "#{base_url}/demo/webhooks/#{demo.id}")
